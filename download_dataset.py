@@ -66,7 +66,7 @@ def download_file(url, dest_path):
     print("Download complete.")
 
 def download_thor_magni(output_dir="dataset"):
-    record_id = "10837562"
+    record_id = "13865754"
     url = f"https://zenodo.org/api/records/{record_id}"
     print(f"Querying Zenodo API: {url}")
     response = requests.get(url)
