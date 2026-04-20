@@ -49,3 +49,7 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+# Ignore downloaded datasets
+dataset/
+datasets/
