@@ -58,7 +58,7 @@ To train an accurate velocity estimation network, the ground-truth velocity labe
 **Reasoning:** 
 With clean data extracted, the MLP regression network requires sequences of past data to predict the final velocity. We implemented a sliding window approach with parameters `T=10` (1 second history at 10Hz) and `stride=1` frame step. This script successfully partitions our cleaned pedestrian trajectories into structured `X` (features matrix, shape `T * 4`) and `y` (target `[vx, vy]`) matrices for our models, rigorously separated into Train, Validation, and Test sequences without cross-contamination.
 
-## Week 1 Goal Complete
+## Week 1 Goal Complete (4 days Early)
 
 ## Beginning Week 3 - Model Training
 
@@ -76,4 +76,4 @@ The neural network successfully trained on the dataset, achieving early stopping
 - **RMSE**: 0.3054 m/s (Ours) vs 0.8184 m/s (Kalman Baseline)
 The MLP provided a ~66% improvement across all metrics. The plotted history successfully reflects this outperformance and the smooth convergence of the training run.
 
-## Week 3 Goal Complete
+## Week 3 Goal Complete (9 days Early)
