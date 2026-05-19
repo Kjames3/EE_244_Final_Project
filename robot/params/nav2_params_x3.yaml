@@ -168,6 +168,7 @@ controller_server:
       critics:
         - "ConstraintCritic"
         - "CostCritic"
+        - "InflationCritic"
         - "GoalCritic"
         - "GoalAngleCritic"
         - "PathAlignCritic"
@@ -200,6 +201,15 @@ controller_server:
         consider_footprint: true
         collision_cost: 1000000.0
         near_goal_distance: 1.0
+      InflationCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 5.0
+        inflation_radius: 0.8
+        critical_cost: 300.0
+        consider_footprint: true
+        collision_cost: 1000000.0
+        near_goal_distance: 0.5
       PathAlignCritic:
         enabled: true
         cost_power: 1
