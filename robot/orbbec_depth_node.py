@@ -13,6 +13,7 @@ NOTE: Only one process can hold the OpenNI2/Orbbec device at a time.
       Do NOT run this alongside server_x3.py (which also opens the camera).
 """
 
+import os
 import sys
 import numpy as np
 import rclpy
@@ -26,9 +27,13 @@ ASTRA_FY = 570.3
 ASTRA_CX = 319.5
 ASTRA_CY = 239.5
 
-# Paths to try when finding libOpenNI2.so (mirrors drivers_x3.py search list)
+# Paths to try when finding libOpenNI2.so.
+# ~/x3_ws/src/ is first because that is where the Yahboom SDK ships the library
+# and its OpenNI2/Drivers/ subdirectory on this Jetson.  The openni Python
+# package also checks os.getcwd() implicitly, but an explicit path is safer.
 _OPENNI2_SEARCH_DIRS = [
-    None,            # system default (LD_LIBRARY_PATH / OPENNI2_REDIST)
+    os.path.expanduser("~/x3_ws/src"),   # Yahboom SDK location on Jetson
+    None,                                 # openni default (cwd / OPENNI2_REDIST)
     "/usr/lib",
     "/usr/local/lib",
     "/opt/openni2/lib",
