@@ -15,7 +15,7 @@ Then scp all three files to the Jetson:
     scp checkpoints/velocity_mlp.torchscript \\
         checkpoints/scaler_X.pkl \\
         checkpoints/scaler_y.pkl \\
-        kamren@<JETSON_IP>:~/x3_ws/src/
+        jetson@<JETSON_IP>:~/x3_ws/src/
 """
 
 import sys
@@ -103,7 +103,7 @@ def main():
     for f in [out_path, scaler_x, scaler_y]:
         exists = "✓" if f.exists() else "✗ MISSING"
         print(f"  {exists}  {f.name}")
-    print(f"\n  scp {out_path} {scaler_x} {scaler_y} kamren@<JETSON_IP>:~/x3_ws/src/")
+    print(f"\n  scp {out_path} {scaler_x} {scaler_y} jetson@<JETSON_IP>:~/x3_ws/src/")
 
 
 if __name__ == "__main__":
