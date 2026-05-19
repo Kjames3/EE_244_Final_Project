@@ -4,26 +4,29 @@ x3_bringup.launch.py
 Hardware-only bringup for the Yahboom ROSMASTER X3.
 Starts all physical drivers and state estimation WITHOUT SLAM Toolbox.
 
-SLAM is started separately — either via the GUI "Start SLAM" button
-(python3 src/server_x3.py --ros2) or manually:
-  ros2 launch yahboomcar_nav x3_slam.launch.py
-
 Starts:
-  - robot_state_publisher      (URDF → TF static frames)
+  - robot_state_publisher      (URDF → TF static frames + /robot_description)
   - joint_state_publisher
   - Mcnamu_driver_X3           (cmd_vel → Rosmaster hardware, publishes vel_raw / imu)
   - base_node_X3               (vel_raw → /odom_raw, dead-reckoning odometry)
   - imu_filter_madgwick_node   (imu/data_raw → imu/data)
   - ekf_filter_node            (odom_raw + imu/data → /odom, odom→base_footprint TF)
   - ydlidar_ros2_driver_node   (/scan laser scan)
+  - orbbec_depth_node          (/camera/depth/image_raw + /camera/depth/camera_info)
 
-This is auto-launched by server_x3.py --ros2.
+NOTE: orbbec_depth_node opens the Orbbec Astra via OpenNI2 directly.
+      Do NOT run this alongside server_x3.py — both cannot hold the device at once.
+
+Verify all sensors after launch:
+  ros2 topic hz /scan                    # ~8 Hz
+  ros2 topic hz /camera/depth/image_raw  # ~30 Hz
+  ros2 topic hz /odom                    # ~50 Hz
 """
 
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
@@ -122,6 +125,18 @@ def generate_launch_description():
         parameters=[ydlidar_cfg],
     )
 
+    # ── Orbbec depth camera ───────────────────────────────────────────
+    # Publishes /camera/depth/image_raw (16UC1, mm) + /camera/depth/camera_info
+    # Required for record_bag.sh and laptop RViz visualization.
+    _camera_script = os.path.join(
+        os.path.dirname(__file__), '..', 'orbbec_depth_node.py'
+    )
+    camera_node = ExecuteProcess(
+        cmd=['python3', _camera_script],
+        output='screen',
+        name='orbbec_depth_node',
+    )
+
     return LaunchDescription([
         gui_arg,
         robot_state_publisher,
@@ -132,4 +147,5 @@ def generate_launch_description():
         imu_filter_node,
         ekf_node,
         ydlidar_node,
+        camera_node,
     ])
